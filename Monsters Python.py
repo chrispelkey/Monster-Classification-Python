@@ -9,7 +9,9 @@ import seaborn as sns
 
 ##Import the dataset as a 'train' variable and run a quick overview
 train = pd.read_csv("train.csv")
+test = pd.read_csv("test.csv")
 train.head()
+test.head()
 
 ##Begin exploratory data analysis to see trends in data
 ####A quick look determines that there are 1 identifier column, 6 distinct variables and 371 observations
@@ -54,3 +56,33 @@ sns.pairplot(train[continuous_columns], hue = 'type') #Figure 6
 sns.countplot(y="color", hue="type", data=train) #Figure 7
 
 #Begin model building
+##Import more packages for data prep and model building
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+##Start with data preparation
+y = train["type"]
+indexes = test["id"]
+
+###Remove uneccessary variables
+train = train.drop(["type","color","id"],axis=1)
+test = test.drop(["color","id"],axis=1)
+
+###Split training data into training and test data sets with 75% split to training
+xtrain, xtest, ytrain, ytest = train_test_split(train, y, test_size=0.3, random_state=1127)
+
+##See how logistic regression holds
+logistic_model_1 = LogisticRegression(penalty='l2', C=1000)
+logistic_model_1.fit(xtrain,ytrain)
+ypred= logistic_model_1.predict(xtest) 
+
+classification_report(ypred,ytest)
+####             precision    recall  f1-score   support
+####
+####      Ghost       0.85      0.78      0.81        36
+####      Ghoul       0.89      0.65      0.75        48
+####     Goblin       0.43      0.68      0.53        28
+####
+####avg / total       0.76      0.70      0.71       112
