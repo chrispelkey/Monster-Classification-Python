@@ -60,7 +60,7 @@ sns.countplot(y="color", hue="type", data=train) #Figure 7
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 ##Start with data preparation
 y = train["type"]
@@ -86,3 +86,13 @@ classification_report(ypred,ytest)
 ####     Goblin       0.43      0.68      0.53        28
 ####
 ####avg / total       0.76      0.70      0.71       112
+logistic_model_1.score(xtest, ytest)
+
+##Try a KMeans Nearest Neighbors
+knn = KNeighborsClassifier(n_neighbors = 5)
+knn.fit(xtest,ytest)
+ypred= logistic_model_1.predict(xtest) 
+
+classification_report(ypred,ytest)
+
+knn.score(xtest, ytest)
